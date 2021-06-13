@@ -184,6 +184,9 @@ jobs:
           url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-16.04.tar.xz"
           target: public/
 
+      - name: Extract LLVM
+        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+
       - name: Configure
         run: >
           bash configure
@@ -197,6 +200,8 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
+          --with-libclang=clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          --with-libclang-version=12
         working-directory: jdk
 
       - name: Build
