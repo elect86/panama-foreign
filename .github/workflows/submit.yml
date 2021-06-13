@@ -205,7 +205,7 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
-          --with-libclang=clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          --with-libclang=../clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
           --with-libclang-version=12
         working-directory: jdk
 
