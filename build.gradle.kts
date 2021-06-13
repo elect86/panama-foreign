@@ -3,7 +3,6 @@ tasks {
 
     register("compileJdk") {
 
-
     }
 
 }
