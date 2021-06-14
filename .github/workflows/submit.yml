@@ -1715,6 +1715,9 @@ jobs:
         with:
           path: test-results
 
+      - name: Show
+        run: ls /home/runner/work/panama-foreign/panama-foreign/test-results/artifact
+
       - name: Delete remaining artifacts
         run: >
           for url in `
