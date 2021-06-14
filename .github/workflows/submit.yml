@@ -178,17 +178,11 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
-      - name: Show
-        run: ls
-
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
           name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
           path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-
-      - name: Show
-        run: ls
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
@@ -573,6 +567,7 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
           path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
 
       - name: Configure
@@ -679,6 +674,7 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
           path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
 
       - name: Configure
