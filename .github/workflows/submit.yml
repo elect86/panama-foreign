@@ -193,7 +193,7 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
 
       - name: Configure
         run: >
