@@ -838,6 +838,9 @@ jobs:
           if ! grep --include=test-summary.txt -lqr build/*/test-results -e "TEST SUCCESS" ; then
             cat build/*/test-results/*/text/newfailures.txt ;
             exit 1 ;
+          else
+#            gh release create $(git describe --tags) --
+            ls
           fi
 
       - name: Create suitable test log artifact name
