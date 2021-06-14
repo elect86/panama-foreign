@@ -671,12 +671,6 @@ jobs:
           sudo apt-get install gcc-10-multilib g++-10-multilib libfreetype6-dev:i386 libxrandr-dev:i386 libxtst-dev:i386 libtiff-dev:i386 libcupsimage2-dev:i386 libcups2-dev:i386 libasound2-dev:i386
           sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 100 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 
-      - name: Restore llvm
-        uses: actions/download-artifact@v2
-        with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-
       - name: Configure
         run: >
           bash configure
@@ -691,8 +685,6 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
-          --with-libclang=../clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-          --with-libclang-version=12
         working-directory: jdk
 
       - name: Build

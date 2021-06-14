@@ -46,34 +46,34 @@ import java.lang.invoke.MethodType;
 
 import static jdk.incubator.foreign.CLinker.C_INT;
 
-public class TestLinkToNativeRBP {
-    final static CLinker abi = CLinker.getInstance();
-    static final LibraryLookup lookup = LibraryLookup.ofLibrary("LinkToNativeRBP");
-    final static MethodHandle foo = abi.downcallHandle(lookup.lookup("foo").get(),
-            MethodType.methodType(int.class),
-            FunctionDescriptor.of(C_INT));
-
-    static int foo() throws Throwable {
-        return (int)foo.invokeExact();
-    }
-    public static void main(String[] args) throws Throwable {
-        for (int i = 0; i < 20_000; i++) {
-            test(5);
-        }
-        for (int i = 0; i < 100; i++) {
-            test(1_000_000);
-        }
-    }
-
-    static volatile Integer field = 0;
-
-    private static int test(int stop) throws Throwable {
-        int res = 0;
-        for (int i = 0; i < stop; i++) {
-            Integer v = field;
-            res = foo() + v.intValue();
-        }
-        return res;
-    }
-
-}
+//public class TestLinkToNativeRBP {
+//    final static CLinker abi = CLinker.getInstance();
+//    static final LibraryLookup lookup = LibraryLookup.ofLibrary("LinkToNativeRBP");
+//    final static MethodHandle foo = abi.downcallHandle(lookup.lookup("foo").get(),
+//            MethodType.methodType(int.class),
+//            FunctionDescriptor.of(C_INT));
+//
+//    static int foo() throws Throwable {
+//        return (int)foo.invokeExact();
+//    }
+//    public static void main(String[] args) throws Throwable {
+//        for (int i = 0; i < 20_000; i++) {
+//            test(5);
+//        }
+//        for (int i = 0; i < 100; i++) {
+//            test(1_000_000);
+//        }
+//    }
+//
+//    static volatile Integer field = 0;
+//
+//    private static int test(int stop) throws Throwable {
+//        int res = 0;
+//        for (int i = 0; i < stop; i++) {
+//            Integer v = field;
+//            res = foo() + v.intValue();
+//        }
+//        return res;
+//    }
+//
+//}
