@@ -839,7 +839,6 @@ jobs:
             cat build/*/test-results/*/text/newfailures.txt ;
             exit 1 ;
           else
-#            gh release create $(git describe --tags) --
             ls
           fi
 
