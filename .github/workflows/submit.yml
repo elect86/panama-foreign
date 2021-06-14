@@ -114,6 +114,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Persist llvm
         with:
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
           path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
 
   linux_x64_build:
