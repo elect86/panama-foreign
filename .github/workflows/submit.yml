@@ -381,8 +381,8 @@ jobs:
         with:
           artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{GITHUB_ACTOR}}-${{GITHUB_SHA}}
-          bodyFile: ${{GITHUB_ACTOR}-${GITHUB_SHA}}
+          tag: tag
+          bodyFile: bodyFile
           draft: true
 
       - name: Create suitable test log artifact name
