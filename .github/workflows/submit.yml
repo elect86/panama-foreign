@@ -108,14 +108,11 @@ jobs:
         with:
           url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz"
 
-      - name: Extract LLVM
-        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-
       - uses: actions/upload-artifact@v2
         name: Persist llvm
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
 
   linux_x64_build:
     name: Linux x64
@@ -181,8 +178,11 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+
+      - name: Extract LLVM
+        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
@@ -364,6 +364,8 @@ jobs:
           if ! grep --include=test-summary.txt -lqr build/*/test-results -e "TEST SUCCESS" ; then
             cat build/*/test-results/*/text/newfailures.txt ;
             exit 1 ;
+          else
+            gh release create ${GITHUB_ACTOR}-${GITHUB_SHA} --notes "bugfix release" "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz"
           fi
 
       - name: Create suitable test log artifact name
@@ -567,8 +569,11 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+
+      - name: Extract LLVM
+        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
 
       - name: Configure
         run: >
@@ -652,6 +657,15 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
+      - name: Restore llvm
+        uses: actions/download-artifact@v2
+        with:
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+
+      - name: Extract LLVM
+        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+
       - name: Checkout gtest sources
         uses: actions/checkout@v2
         with:
@@ -685,6 +699,8 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
+          --with-libclang=../clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          --with-libclang-version=12
         working-directory: jdk
 
       - name: Build
@@ -838,8 +854,6 @@ jobs:
           if ! grep --include=test-summary.txt -lqr build/*/test-results -e "TEST SUCCESS" ; then
             cat build/*/test-results/*/text/newfailures.txt ;
             exit 1 ;
-          else
-            ls
           fi
 
       - name: Create suitable test log artifact name
@@ -1729,9 +1743,6 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           path: test-results
-
-      - name: Show
-        run: ls /home/runner/work/panama-foreign/panama-foreign/test-results/artifact
 
       - name: Delete remaining artifacts
         run: >
