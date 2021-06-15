@@ -104,12 +104,23 @@ jobs:
         if: steps.check_submit.outputs.should_run != 'false'
 
       - uses: suisei-cn/actions-download-file@v1
-        name: Download LLVM binaries
+        name: Download linux x64 LLVM binaries
         with:
           url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz"
 
       - uses: actions/upload-artifact@v2
-        name: Persist llvm
+        name: Persist linux x64 llvm
+        with:
+          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+
+      - uses: suisei-cn/actions-download-file@v1
+        name: Download macos x64 LLVM binaries
+        with:
+          url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz"
+
+      - uses: actions/upload-artifact@v2
+        name: Persist macos x64 llvm
         with:
           name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
           path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
@@ -363,9 +374,14 @@ jobs:
           if ! grep --include=test-summary.txt -lqr build/*/test-results -e "TEST SUCCESS" ; then
             cat build/*/test-results/*/text/newfailures.txt ;
             exit 1 ;
-          else
-            gh release create ${GITHUB_ACTOR}-${GITHUB_SHA} --notes "bugfix release" "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz"
           fi
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: ~/jdk-linux-x64${{ matrix.artifact }}/transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create suitable test log artifact name
         if: always()
@@ -1367,6 +1383,14 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
+      - name: Restore llvm
+        uses: actions/download-artifact@v2
+        with:
+          name: clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
+
+      - name: Extract LLVM
+        run: tar -xf clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
+
       - name: Checkout gtest sources
         uses: actions/checkout@v2
         with:
@@ -1393,6 +1417,8 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
+          --with-libclang=../clang+llvm-12.0.0-x86_64-apple-darwin
+          --with-libclang-version=12
         working-directory: jdk
 
       - name: Build
