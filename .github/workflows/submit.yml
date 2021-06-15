@@ -376,12 +376,14 @@ jobs:
             exit 1 ;
           fi
 
-      - name: Release
-        uses: softprops/action-gh-release@v1
+      - name: 🛎️ Create release
+        uses: ncipollo/release-action@v1
         with:
-          files: ~/jdk-linux-x64${{ matrix.artifact }}/transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${GITHUB_ACTOR}-${GITHUB_SHA}
+          bodyFile: ${GITHUB_ACTOR}-${GITHUB_SHA}
+          draft: true
 
       - name: Create suitable test log artifact name
         if: always()
