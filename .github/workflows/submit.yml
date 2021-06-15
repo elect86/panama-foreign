@@ -381,7 +381,7 @@ jobs:
         with:
           artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{GITHUB_ACTOR}-${GITHUB_SHA}}
+          tag: ${{GITHUB_ACTOR}}-${{GITHUB_SHA}}
           bodyFile: ${{GITHUB_ACTOR}-${GITHUB_SHA}}
           draft: true
 
