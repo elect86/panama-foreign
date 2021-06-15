@@ -1,0 +1,19 @@
+name: Sync Fork
+
+on:
+  schedule:
+#    - cron: "*/5 * * * *" # every 5 minutes
+    - cron: '0 0 * * *' # At the end of every day
+  workflow_dispatch: # on button click
+
+jobs:
+  sync:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: tgymnich/fork-sync@v1.4
+        with:
+          owner: openjdk
+          base: foreign-jextract
+          head: foreign-jextract
