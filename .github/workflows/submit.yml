@@ -122,8 +122,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         name: Persist macos x64 llvm
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          name: clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
+          path: clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
 
   linux_x64_build:
     name: Linux x64
