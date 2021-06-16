@@ -21,11 +21,11 @@ jobs:
       bundle_id: ${{ steps.check_bundle_id.outputs.bundle_id }}
       platform_linux_additional: ${{ steps.check_platforms.outputs.platform_linux_additional }}
       platform_linux_x64: ${{ steps.check_platforms.outputs.platform_linux_x64 }}
-      platform_linux_x86: ${{ steps.check_platforms.outputs.platform_linux_x86 }}
-      platform_windows_aarch64: ${{ steps.check_platforms.outputs.platform_windows_aarch64 }}
-      platform_windows_x64: ${{ steps.check_platforms.outputs.platform_windows_x64 }}
+#      platform_linux_x86: ${{ steps.check_platforms.outputs.platform_linux_x86 }}
+#      platform_windows_aarch64: ${{ steps.check_platforms.outputs.platform_windows_aarch64 }}
+#      platform_windows_x64: ${{ steps.check_platforms.outputs.platform_windows_x64 }}
       platform_macos_x64: ${{ steps.check_platforms.outputs.platform_macos_x64 }}
-      platform_macos_aarch64: ${{ steps.check_platforms.outputs.platform_macos_aarch64 }}
+#      platform_macos_aarch64: ${{ steps.check_platforms.outputs.platform_macos_aarch64 }}
       dependencies: ${{ steps.check_deps.outputs.dependencies }}
 
     steps:
@@ -1733,12 +1733,12 @@ jobs:
     needs:
       - prerequisites
       - linux_additional_build
-      - windows_aarch64_build
+#      - windows_aarch64_build
       - linux_x64_test
-      - linux_x86_test
-      - windows_x64_test
+#      - linux_x86_test
+#      - windows_x64_test
       - macos_x64_test
-      - macos_aarch64_build
+#      - macos_aarch64_build
 
     steps:
       - name: Determine current artifacts endpoint
