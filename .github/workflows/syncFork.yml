@@ -14,6 +14,8 @@ jobs:
     steps:
       - uses: tgymnich/fork-sync@v1.4
         with:
+          token: ${{ secrets.PERSONAL_TOKEN }}
           owner: openjdk
           base: foreign-jextract
           head: foreign-jextract
+          auto_approve: true
