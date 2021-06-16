@@ -387,7 +387,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ git describe --tags }}
           body: ${{ github.actor }}-${{ github.sha }}
-          draft: true
 
       - name: Create suitable test log artifact name
         if: always()
