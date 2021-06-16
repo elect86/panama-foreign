@@ -380,7 +380,7 @@ jobs:
           fi
 
       - name: set tag
-        run: echo "TAG=$(git describe --tags)" >> $GITHUB_ENV
+        run: echo "gitDescribe=$(git describe --tags)" >> $GITHUB_ENV
 
       - name: 🛎️ Create release
         if: strategy.job-index == 0
@@ -388,8 +388,7 @@ jobs:
         with:
           artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.TAG }}
-          commit: $GITHUB_SHA
+          name: ${{ env.gitDescribe }}
           body: ${{ github.actor }}-${{ env.GITHUB_SHA_SHORT }}
 
       - name: Create suitable test log artifact name
