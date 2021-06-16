@@ -382,8 +382,8 @@ jobs:
         with:
           artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: $GITHUB_ACTOR-$GITHUB_SHA
-          body: $GITHUB_ACTOR-$GITHUB_SHA ${{ env.GITHUB_SHA }}
+          tag: ${{ github.actor }}-${{ github.sha }}
+          body: ${{ github.actor }}-${{ github.sha }}
           draft: true
 
       - name: Create suitable test log artifact name
