@@ -379,9 +379,8 @@ jobs:
             exit 1 ;
           fi
 
-      - name: Retrieve tag
-        run: echo "::set-output name=TAG::$(git describe --tags)"
-        id: getTag
+      - name: set tag
+        run: echo "TAG=$(git describe --tags)" >> $GITHUB_ENV
 
       - name: 🛎️ Create release
         if: strategy.job-index == 0
@@ -389,7 +388,7 @@ jobs:
         with:
           artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.getTag.outputs.TAG }}
+          tag: ${{ env.TAG }}
           body: ${{ github.actor }}-${{ env.GITHUB_SHA_SHORT }}
 
       - name: Create suitable test log artifact name
