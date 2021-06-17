@@ -160,17 +160,11 @@ jobs:
         run: git describe --tags
         working-directory: jdk
 
-      - name: Create tag
-        uses: actions/github-script@v3
-        with:
-          github-token: ${{ github.token }}
-          script: |
-            github.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: "refs/tags/tagname",
-              sha: context.sha
-            })
+      - name: push tag
+        run: |
+          git tag $(git describe --tags) HEAD
+          git push --tags
+        working-directory: jdk
 
       - name: Restore boot JDK from cache
         id: bootjdk
