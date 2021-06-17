@@ -162,6 +162,7 @@ jobs:
 
       - name: push tag
         run: |
+          git checkout foreign-jextract
           git tag -f $(git describe --tags)
           git push origin foreign-jextract
         working-directory: jdk
