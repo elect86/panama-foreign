@@ -158,11 +158,13 @@ jobs:
 
       - name: git describe
         run: git describe --tags
+        working-directory: jdk
 
       - name: push tag
         run: |
           git tag -f $(git describe --tags)
           git push origin foreign-jextract
+        working-directory: jdk
 
       - name: Restore boot JDK from cache
         id: bootjdk
