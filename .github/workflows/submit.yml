@@ -295,7 +295,10 @@ jobs:
       - name: Checkout the source
         uses: actions/checkout@v2
         with:
-          fetch-depth: 10000 # for `git describe --tags`
+          fetch-depth: 0 # for `git describe --tags`
+
+      - name: git describe
+        run: git describe --tags
 
       - name: Restore boot JDK from cache
         id: bootjdk
