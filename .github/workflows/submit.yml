@@ -459,6 +459,11 @@ jobs:
 
     steps:
 
+      - run: echo ${{ env.JDK_VERSION }}
+      - run: echo ${{ matrix.artifact }}
+      - run: echo ${{ needs.prerequisites.outputs.bundle_id }}
+      - run: ls
+
       - name: Restore build artifacts
         id: build_restore
         uses: actions/download-artifact@v2
@@ -473,6 +478,8 @@ jobs:
           name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
 #          path: ~/jdk-linux-x64${{ matrix.artifact }}
         if: steps.build_restore.outcome == 'failure'
+
+      - run: ls
 
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
