@@ -1830,21 +1830,6 @@ jobs:
 #          path: ~/jdk-macos-x64${{ matrix.artifact }}
         if: steps.build_restore.outcome == 'failure'
 
-      - name: Restore build artifacts
-        id: build_restore
-        uses: actions/download-artifact@v2
-        with:
-          name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
-        #          path: ~/jdk-linux-x64${{ matrix.artifact }}
-        continue-on-error: true
-
-      - name: Restore build artifacts (retry)
-        uses: actions/download-artifact@v2
-        with:
-          name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
-        #          path: ~/jdk-linux-x64${{ matrix.artifact }}
-        if: steps.build_restore.outcome == 'failure'
-
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
         with:
