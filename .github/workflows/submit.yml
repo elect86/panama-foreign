@@ -134,7 +134,7 @@ jobs:
         run: |
           git tag $(date +"%y-%m-%d") HEAD
           git push --tags
-          echo "::set-output name=tag::$(date +"%y-%m-%d")"
+          echo "::set-output name=tag::`date +"%y-%m-%d"`"
         working-directory: jdk
 
   linux_x64_build:
