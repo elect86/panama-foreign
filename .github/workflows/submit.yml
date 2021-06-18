@@ -14,7 +14,7 @@ on:
 
 jobs:
   prerequisites:
-    name: Prerequisites
+#    name: Prerequisites
     runs-on: "ubuntu-20.04"
     outputs:
       should_run: ${{ steps.check_submit.outputs.should_run }}
@@ -143,7 +143,7 @@ jobs:
         working-directory: jdk
 
   linux_x64_build:
-    name: Linux x64
+#    name: Linux x64
     runs-on: "ubuntu-20.04"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && (needs.prerequisites.outputs.platform_linux_x64 != 'false' || needs.prerequisites.outputs.platform_linux_additional == 'true')
@@ -438,7 +438,7 @@ jobs:
         continue-on-error: true
 
   linux_x64_release:
-    name: Linux x64
+#    name: Linux x64
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -487,7 +487,7 @@ jobs:
           artifactErrorsFailBuild: true
 
   linux_additional_build:
-    name: Linux additional
+#    name: Linux additional
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -674,7 +674,7 @@ jobs:
         working-directory: jdk
 
   linux_x86_build:
-    name: Linux x86
+#    name: Linux x86
     runs-on: "ubuntu-20.04"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_linux_x86 != 'false'
@@ -793,7 +793,7 @@ jobs:
             jdk/build/linux-x86/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin-tests${{ matrix.artifact }}.tar.gz
 
   linux_x86_test:
-    name: Linux x86
+#    name: Linux x86
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -1061,7 +1061,7 @@ jobs:
         working-directory: jdk
 
   windows_x64_build:
-    name: Windows x64
+#    name: Windows x64
     runs-on: "windows-2019"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_windows_x64 != 'false'
@@ -1185,7 +1185,7 @@ jobs:
             jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}-symbols.tar.gz
 
   windows_x64_test:
-    name: Windows x64
+#    name: Windows x64
     runs-on: "windows-2019"
     needs:
       - prerequisites
@@ -1386,7 +1386,7 @@ jobs:
         continue-on-error: true
 
   macos_x64_build:
-    name: macOS x64
+#    name: macOS x64
     runs-on: "macos-10.15"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_macos_x64 != 'false'
@@ -1498,7 +1498,7 @@ jobs:
             jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz
 
   macos_aarch64_build:
-    name: macOS aarch64
+#    name: macOS aarch64
     runs-on: "macos-10.15"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_macos_aarch64 != 'false'
@@ -1602,7 +1602,7 @@ jobs:
 
 
   macos_x64_test:
-    name: macOS x64
+#    name: macOS x64
     runs-on: "macos-10.15"
     needs:
       - prerequisites
