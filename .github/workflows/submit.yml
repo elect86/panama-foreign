@@ -38,6 +38,7 @@ jobs:
         id: check_platforms
         run: |
           echo "${{ contains(github.event.inputs.platforms, 'linux x86') }}"
+          echo "${{ github.event.inputs.platforms }}"
           echo "${{ github.event.inputs.platforms == '' }}"
           echo "${{ secrets.JDK_SUBMIT_PLATFORMS == '' }}"
           echo "${{ contains(secrets.JDK_SUBMIT_PLATFORMS, 'linux x86') }}"
