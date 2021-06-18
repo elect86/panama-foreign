@@ -132,6 +132,7 @@ jobs:
         run: |
           git tag $(date +"%y-%m-%d") HEAD
           git push --tags
+        working-directory: jdk
 
   linux_x64_build:
     name: Linux x64
