@@ -128,6 +128,11 @@ jobs:
           name: clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
           path: clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
 
+      - name: push tag for the incoming release
+        run: |
+          git tag $(date +"%y-%m-%d") HEAD
+          git push --tags
+
   linux_x64_build:
     name: Linux x64
     runs-on: "ubuntu-20.04"
@@ -384,22 +389,14 @@ jobs:
             exit 1 ;
           fi
 
-      - name: push tag
-        run: |
-          git tag $(date +"%y-%m-%d") HEAD
-          git push --tags
-
-      - name: set tag
-        run: echo "tag=$(date +"%y-%m-%d")" >> $GITHUB_ENV
-
       - name: 🛎️ Create release
         if: strategy.job-index == 0
         uses: ncipollo/release-action@v1
         with:
           artifact: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.tag }}
-          name: ${{ env.tag }}
+          tag: ${{ date +"%y-%m-%d" }}
+          name: $(date +"%y-%m-%d")
           body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
           allowUpdates: true
           artifactErrorsFailBuild: true
