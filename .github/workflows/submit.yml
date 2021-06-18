@@ -27,6 +27,7 @@ jobs:
       platform_macos_x64: ${{ steps.check_platforms.outputs.platform_macos_x64 }}
       platform_macos_aarch64: ${{ steps.check_platforms.outputs.platform_macos_aarch64 }}
       dependencies: ${{ steps.check_deps.outputs.dependencies }}
+      tag: ${{ steps.pushTag.outputs }}
 
     steps:
       - name: Check if submit tests should actually run depending on secrets and manual triggering
@@ -135,9 +136,11 @@ jobs:
           path: clang+llvm-12.0.0-x86_64-apple-darwin.tar.xz
 
       - name: push tag for the incoming release
+        id: pushTag
         run: |
           git tag $(date +"%y-%m-%d") HEAD
           git push --tags
+          echo "::set-output name=tag::$(date +"%y-%m-%d")"
         working-directory: jdk
 
   linux_x64_build:
