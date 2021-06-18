@@ -383,11 +383,11 @@ jobs:
 
       - name: push tag
         run: |
-          git tag $(git describe --tags) HEAD
+          git tag $(date +"%y-%m-%d") HEAD
           git push --tags
 
       - name: set tag
-        run: echo "gitDescribe=$(git describe --tags)" >> $GITHUB_ENV
+        run: echo "tag=$(date +"%y-%m-%d")" >> $GITHUB_ENV
 
       - name: 🛎️ Create release
         if: strategy.job-index == 0
@@ -395,8 +395,8 @@ jobs:
         with:
           artifact: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ env.gitDescribe }}
-          name: ${{ env.gitDescribe }}
+          tag: ${{ env.tag }}
+          name: ${{ env.tag }}
           body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
           allowUpdates: true
           artifactErrorsFailBuild: true
