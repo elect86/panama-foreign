@@ -27,7 +27,7 @@ jobs:
       platform_macos_x64: ${{ steps.check_platforms.outputs.platform_macos_x64 }}
       platform_macos_aarch64: ${{ steps.check_platforms.outputs.platform_macos_aarch64 }}
       dependencies: ${{ steps.check_deps.outputs.dependencies }}
-      tag: ${{ steps.pushTag.outputs }}
+      tag: ${{ steps.pushTag.outputs.tag }}
 
     steps:
       - name: Check if submit tests should actually run depending on secrets and manual triggering
