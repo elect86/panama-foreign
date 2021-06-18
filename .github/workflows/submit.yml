@@ -254,7 +254,7 @@ jobs:
             jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz
 
   linux_x64_test:
-    name: Linux x64
+#    name: Linux x64
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -457,12 +457,10 @@ jobs:
             flags: --enable-debug
             artifact: -debug
 
-    steps:
+    env:
+      JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).DEFAULT_VERSION_FEATURE }}"
 
-      - run: echo ${{ env.JDK_VERSION }}
-      - run: echo ${{ matrix.artifact }}
-      - run: echo ${{ needs.prerequisites.outputs.bundle_id }}
-      - run: ls
+    steps:
 
       - name: Restore build artifacts
         id: build_restore
@@ -478,8 +476,6 @@ jobs:
           name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
 #          path: ~/jdk-linux-x64${{ matrix.artifact }}
         if: steps.build_restore.outcome == 'failure'
-
-      - run: ls
 
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
