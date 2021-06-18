@@ -50,7 +50,6 @@ jobs:
           echo "::set-output name=platform_macos_aarch64::false"
 
 #          echo "::set-output name=platform_linux_x86::${{ contains(github.event.inputs.platforms, 'linux x86') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'linux x86'))) }}"
-#          echo "::set-output name=platform_windows_aarch64::${{ contains(github.event.inputs.platforms, 'windows aarch64') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'windows aarch64'))) }}"
 #          echo "::set-output name=platform_windows_x64::${{ contains(github.event.inputs.platforms, 'windows x64') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'windows x64'))) }}"
 #          echo "::set-output name=platform_macos_aarch64::${{ contains(github.event.inputs.platforms, 'macos aarch64') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'macos aarch64'))) }}"
         if: steps.check_submit.outputs.should_run != 'false'
@@ -138,9 +137,9 @@ jobs:
       - name: push tag for the incoming release
         id: pushTag
         run: |
-          git tag $(date +"%y-%m-%d") HEAD
+          git tag $(date +"%y-%m-%d_%H.%M") HEAD
           git push --tags
-          echo "::set-output name=tag::`date +"%y-%m-%d"`"
+          echo "::set-output name=tag::`date +"%y-%m-%d_%H.%M"`"
         working-directory: jdk
 
   linux_x64_build:
@@ -399,18 +398,6 @@ jobs:
             exit 1 ;
           fi
 
-      - name: 🛎️ Create release
-        if: strategy.job-index == 0
-        uses: ncipollo/release-action@v1
-        with:
-          artifact: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.prerequisites.outputs.tag }}
-          name: ${{ needs.prerequisites.outputs.tag }}
-          body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
-          allowUpdates: true
-          artifactErrorsFailBuild: true
-
       - name: Create suitable test log artifact name
         if: always()
         run: echo "logsuffix=`echo ${{ matrix.test }} | sed -e 's!/!_!'g -e 's! !_!'g`" >> $GITHUB_ENV
@@ -449,6 +436,52 @@ jobs:
         with:
           path: ~/linux-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
+
+  linux_x64_release:
+    name: Linux x64
+    runs-on: "ubuntu-20.04"
+    needs: prerequisites
+    if: needs.prerequisites.outputs.should_run != 'false' && (needs.prerequisites.outputs.platform_linux_x64 != 'false' || needs.prerequisites.outputs.platform_linux_additional == 'true')
+
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor:
+          - build release
+          - build debug
+        include:
+          - flavor: build debug
+            flags: --enable-debug
+            artifact: -debug
+
+    steps:
+
+      - name: Restore build artifacts
+        id: build_restore
+        uses: actions/download-artifact@v2
+        with:
+          name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
+#          path: ~/jdk-linux-x64${{ matrix.artifact }}
+        continue-on-error: true
+
+      - name: Restore build artifacts (retry)
+        uses: actions/download-artifact@v2
+        with:
+          name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
+#          path: ~/jdk-linux-x64${{ matrix.artifact }}
+        if: steps.build_restore.outcome == 'failure'
+
+      - name: 🛎️ Create release
+        uses: ncipollo/release-action@v1
+        with:
+#          artifacts: ~/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
+          artifacts: jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.prerequisites.outputs.tag }}
+          name: ${{ needs.prerequisites.outputs.tag }}
+          body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
+          allowUpdates: true
+          artifactErrorsFailBuild: true
 
   linux_additional_build:
     name: Linux additional
