@@ -266,7 +266,9 @@ jobs:
         with:
           artifacts:
             jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz,
-            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}-symbols.tar.gz,
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz,
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests-demos${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
           name: ${{ needs.prerequisites.outputs.tag }}
@@ -463,6 +465,19 @@ jobs:
         with:
           path: ~/linux-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
+
+      - name: 🛎️ Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts:
+            ~/linux-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip,
+            ~/linux-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.prerequisites.outputs.tag }}
+          name: ${{ needs.prerequisites.outputs.tag }}
+          body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
+          allowUpdates: true
+          artifactErrorsFailBuild: true
 
   linux_additional_build:
 #    name: Linux additional
@@ -1775,6 +1790,19 @@ jobs:
         with:
           path: ~/macos-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
+
+      - name: 🛎️ Create release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts:
+            ~/macos-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip,
+            ~/macos-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ needs.prerequisites.outputs.tag }}
+          name: ${{ needs.prerequisites.outputs.tag }}
+          body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
+          allowUpdates: true
+          artifactErrorsFailBuild: true
 
   artifacts:
     name: Post-process artifacts
