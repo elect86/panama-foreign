@@ -231,11 +231,15 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
+      - run: ls ~
+
       - name: Check if llvm-linux64 is present in the cache
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
           key: llvm-linux64
+
+      - run: ls ~
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
