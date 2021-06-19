@@ -234,6 +234,8 @@ jobs:
 
       - run: ls ~
       - run: ls ~/llvm-linux64
+      - run: ls ~/llvm-linux64/lib
+      - run: ls ~/llvm-linux64/lib/clang
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
