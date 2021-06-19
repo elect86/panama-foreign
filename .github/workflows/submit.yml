@@ -116,7 +116,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux64+
+          key: llvm-linux64_
 
       - run: ls ~
 
@@ -126,15 +126,15 @@ jobs:
           url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz"
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - name: create llvm-linux64 extraction directory
-        run: mkdir llvm-linux64
+      - name: Extract llvm(-linux64)
+        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - name: Extract llvm-linux64
-        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -C llvm-linux64
+      - name: Rename llvm(-linux64)
+        run: mv clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04 llvm-linux64
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - name: Move llvm-linux64 to destination folder
+      - name: Move llvm-linux64 into home
         run: mv llvm-linux64 ~/
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
@@ -224,7 +224,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux64+
+          key: llvm-linux64_
 
       - run: ls ~
       - run: ls ~/llvm-linux64
@@ -633,7 +633,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux64
+          key: llvm-linux64_
 
       - run: ls ~
 
