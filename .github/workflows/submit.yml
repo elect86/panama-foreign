@@ -52,11 +52,19 @@ jobs:
         run: echo "::set-output name=bundle_id::${GITHUB_ACTOR}_${GITHUB_SHA:0:8}"
         if: steps.check_submit.outputs.should_run != 'false'
 
+      - name: Cache the source
+        id: source
+        uses: actions/cache@v2
+        with:
+          path: jdk
+          key: source
+        if: steps.check_submit.outputs.should_run != 'false'
+
       - name: Checkout the source
         uses: actions/checkout@v2
         with:
           path: jdk
-        if: steps.check_submit.outputs.should_run != 'false'
+        if: steps.check_submit.outputs.should_run != 'false' && steps.source.outputs.cache-hit != 'true'
 
       - name: Determine versions and locations to be used for dependencies
         id: check_deps
@@ -72,8 +80,6 @@ jobs:
         run: "echo JTREG_REF=jtreg-${{ fromJson(steps.check_deps.outputs.dependencies).JTREG_VERSION }}+${{ fromJson(steps.check_deps.outputs.dependencies).JTREG_BUILD }} >> $GITHUB_ENV"
         if: steps.check_submit.outputs.should_run != 'false'
 
-      - run: ls ~
-
       - name: Check if a jtreg image is present in the cache
         id: jtreg
         uses: actions/cache@v2
@@ -81,8 +87,6 @@ jobs:
           path: ~/jtreg/
           key: jtreg-${{ env.JTREG_REF }}-v1
         if: steps.check_submit.outputs.should_run != 'false'
-
-      - run: ls ~
 
       - name: Checkout the jtreg source
         uses: actions/checkout@v2
@@ -174,10 +178,15 @@ jobs:
       BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
 
     steps:
-      - name: Checkout the source
-        uses: actions/checkout@v2
+#      - name: Checkout the source
+#        uses: actions/checkout@v2
+#        with:
+#          path: jdk
+      - name: Cache the source
+        uses: actions/cache@v2
         with:
           path: jdk
+          key: source
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -209,8 +218,6 @@ jobs:
           name: transient_jtreg_${{ needs.prerequisites.outputs.bundle_id }}
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
-
-      - run: ls ~
 
       - name: Retrieve cached llvm-linux64
         uses: actions/cache@v2
