@@ -344,7 +344,7 @@ jobs:
       - name: Restore source from cache
         uses: actions/cache@v2
         with:
-          path: .
+          path: ./
           key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
@@ -1566,11 +1566,8 @@ jobs:
 
     steps:
 
-      - name: Restore source from cache
-        uses: actions/cache@v2
-        with:
-          path: .
-          key: ${{ github.actor }}
+      - name: Checkout the source
+        uses: actions/checkout@v2
 
       - name: Restore boot JDK from cache
         id: bootjdk
