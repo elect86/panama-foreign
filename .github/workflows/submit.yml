@@ -216,6 +216,9 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
+      - run: ls ~
+      - run: ls ~/llvm-linux64
+
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
