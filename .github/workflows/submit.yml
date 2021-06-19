@@ -109,16 +109,12 @@ jobs:
           path: ~/jtreg/
         if: steps.check_submit.outputs.should_run != 'false'
 
-      - run: ls ~
-
       - name: Check if llvm-linux64 is present in the cache
         id: llvm-linux64
         uses: actions/cache@v2
         with:
-          path: ~/llvm-linux64/
-          key: llvm-linux64_
-
-      - run: ls ~
+          path: llvm-linux64
+          key: llvm-linux64__
 
       - uses: suisei-cn/actions-download-file@v1
         name: Download linux x64 LLVM binaries
@@ -132,10 +128,6 @@ jobs:
 
       - name: Rename llvm(-linux64)
         run: mv clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04 llvm-linux64
-        if: steps.llvm-linux64.outputs.cache-hit != 'true'
-
-      - name: Move llvm-linux64 into home
-        run: mv llvm-linux64 ~/
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
       - uses: suisei-cn/actions-download-file@v1
@@ -223,13 +215,8 @@ jobs:
       - name: Retrieve cached llvm-linux64
         uses: actions/cache@v2
         with:
-          path: ~/llvm-linux64/
-          key: llvm-linux64_
-
-      - run: ls ~
-      - run: ls ~/llvm-linux64
-      - run: ls ~/llvm-linux64/lib
-      - run: ls ~/llvm-linux64/lib/clang
+          path: llvm-linux64
+          key: llvm-linux64__
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
@@ -257,7 +244,7 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
-          --with-libclang=/home/runner/llvm-linux64
+          --with-libclang=../llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
@@ -629,15 +616,11 @@ jobs:
           " >> $GITHUB_ENV
         if: matrix.debian-arch != ''
 
-      - run: ls ~
-
-      - name: Check if llvm-linux64 is present in the cache
+      - name: Retrieve cached llvm-linux64
         uses: actions/cache@v2
         with:
-          path: ~/llvm-linux64/
-          key: llvm-linux64_
-
-      - run: ls ~
+          path: llvm-linux64
+          key: llvm-linux64__
 
       - name: Configure
         run: >
@@ -651,7 +634,7 @@ jobs:
           --with-build-jdk=${{ env.build_jdk_root }}
           --with-default-make-target="hotspot"
           --with-zlib=system
-          --with-libclang=~/llvm-linux64
+          --with-libclang=../llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
