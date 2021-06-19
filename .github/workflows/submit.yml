@@ -629,11 +629,15 @@ jobs:
           " >> $GITHUB_ENV
         if: matrix.debian-arch != ''
 
+      - run: ls ~
+
       - name: Check if llvm-linux64 is present in the cache
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
           key: llvm-linux64
+
+      - run: ls ~
 
       - name: Configure
         run: >
