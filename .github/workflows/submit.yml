@@ -122,7 +122,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux641
+          key: llvm-linux64
 
       - run: ls ~
 
@@ -144,11 +144,12 @@ jobs:
         run: mv llvm-linux64 ~/
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - name: Store llvm-linux64 for use by later steps
-        uses: actions/upload-artifact@v2
+      - name: Cache if was still missing
+        uses: actions/cache@v2
         with:
-          name: llvm-linux64
           path: ~/llvm-linux64/
+          key: llvm-linux64
+        if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
       - uses: suisei-cn/actions-download-file@v1
         name: Download macos x64 LLVM binaries
@@ -230,11 +231,11 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
-      - name: Restore llvm
-        uses: actions/download-artifact@v2
+      - name: Check if llvm-linux64 is present in the cache
+        uses: actions/cache@v2
         with:
-          name: llvm-linux64
           path: ~/llvm-linux64/
+          key: llvm-linux64
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
@@ -262,7 +263,7 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
-          --with-libclang=../llvm-linux64
+          --with-libclang=~/llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
@@ -634,10 +635,11 @@ jobs:
           " >> $GITHUB_ENV
         if: matrix.debian-arch != ''
 
-      - name: Restore llvm
-        uses: actions/download-artifact@v2
+      - name: Check if llvm-linux64 is present in the cache
+        uses: actions/cache@v2
         with:
-          name: llvm-linux64
+          path: ~/llvm-linux64/
+          key: llvm-linux64
 
       - name: Configure
         run: >
@@ -651,7 +653,7 @@ jobs:
           --with-build-jdk=${{ env.build_jdk_root }}
           --with-default-make-target="hotspot"
           --with-zlib=system
-          --with-libclang=../llvm-linux64
+          --with-libclang=~/llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
