@@ -56,7 +56,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ env.CI_SHA_SHORT }}
+          key: ${{ github.actor }}
         if: steps.check_submit.outputs.should_run != 'false'
 
       - name: Checkout the source
@@ -191,7 +191,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ env.CI_SHA_SHORT }}
+          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -344,7 +344,7 @@ jobs:
       - name: Restore source from cache
         uses: actions/cache@v2
         with:
-          key: ${{ env.CI_SHA_SHORT }}
+          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -529,7 +529,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ env.CI_SHA_SHORT }}
+          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -1311,7 +1311,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ env.CI_SHA_SHORT }}
+          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -1568,7 +1568,7 @@ jobs:
       - name: Restore source from cache
         uses: actions/cache@v2
         with:
-          key: ${{ env.CI_SHA_SHORT }}
+          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
