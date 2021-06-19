@@ -48,7 +48,6 @@ jobs:
           echo "::set-output name=platform_windows_x64::false"
           echo "::set-output name=platform_macos_x64::${{ contains(github.event.inputs.platforms, 'macos x64') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'macos x64'))) }}"
           echo "::set-output name=platform_macos_aarch64::false"
-
 #          echo "::set-output name=platform_linux_x86::${{ contains(github.event.inputs.platforms, 'linux x86') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'linux x86'))) }}"
 #          echo "::set-output name=platform_windows_x64::${{ contains(github.event.inputs.platforms, 'windows x64') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'windows x64'))) }}"
 #          echo "::set-output name=platform_macos_aarch64::${{ contains(github.event.inputs.platforms, 'macos aarch64') || (github.event.inputs.platforms == '' && (secrets.JDK_SUBMIT_PLATFORMS == '' || contains(secrets.JDK_SUBMIT_PLATFORMS, 'macos aarch64'))) }}"
@@ -112,16 +111,27 @@ jobs:
           path: ~/jtreg/
         if: steps.check_submit.outputs.should_run != 'false'
 
+      - name: Check if llvm (linux 64) is present in the cache
+        id: llvm-linux64
+        uses: actions/cache@v2
+        with:
+          path: ~/llvm-linux64
+          key: llvm-linux64
+
       - uses: suisei-cn/actions-download-file@v1
         name: Download linux x64 LLVM binaries
         with:
           url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz"
+        if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - uses: actions/upload-artifact@v2
-        name: Persist linux x64 llvm
+      - name: Extract llvm-linux64
+        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -C llvm-linux64
+
+      - name: Store llvm-linux64 for use by later steps
+        uses: actions/upload-artifact@v2
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          path: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          name: llvm-linux64
+          path: llvm-linux64
 
       - uses: suisei-cn/actions-download-file@v1
         name: Download macos x64 LLVM binaries
@@ -203,13 +213,10 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
-      - name: Restore llvm
+      - name: Restore llvm-linux64
         uses: actions/download-artifact@v2
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-
-      - name: Extract LLVM
-        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          name: llvm-linux-64
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
@@ -237,7 +244,7 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
-          --with-libclang=../clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          --with-libclang=../llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
@@ -612,10 +619,7 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
-          name: clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-
-      - name: Extract LLVM
-        run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
+          name: llvm-linux64
 
       - name: Configure
         run: >
@@ -629,7 +633,7 @@ jobs:
           --with-build-jdk=${{ env.build_jdk_root }}
           --with-default-make-target="hotspot"
           --with-zlib=system
-          --with-libclang=../clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04
+          --with-libclang=../llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
