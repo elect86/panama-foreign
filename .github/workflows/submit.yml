@@ -105,11 +105,11 @@ jobs:
           path: ~/jtreg/
         if: steps.check_submit.outputs.should_run != 'false'
 
-      - name: Check if llvm (linux 64) is present in the cache
+      - name: Check if llvm-linux64 is present in the cache
         id: llvm-linux64
         uses: actions/cache@v2
         with:
-          path: ~/llvm-linux64
+          path: ~/llvm-linux64/
           key: llvm-linux64
 
       - uses: suisei-cn/actions-download-file@v1
@@ -130,7 +130,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: llvm-linux64
-          path: llvm-linux64
+          path: ~/llvm-linux64/
 
       - uses: suisei-cn/actions-download-file@v1
         name: Download macos x64 LLVM binaries
@@ -212,10 +212,11 @@ jobs:
           path: ~/jtreg/
         if: steps.jtreg_restore.outcome == 'failure'
 
-      - name: Restore llvm-linux64
+      - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
           name: llvm-linux-64
+          path: ~/llvm-linux-64/
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
