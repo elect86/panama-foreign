@@ -118,22 +118,17 @@ jobs:
           url: "https://github.com/llvm/llvm-project/releases/download/llvmorg-12.0.0/clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz"
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - run: ls
-
       - name: create llvm-linux64 extraction directory
         run: mkdir llvm-linux64
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
-
-      - run: ls
 
       - name: Extract llvm-linux64
         run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -C llvm-linux64
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - run: ls
-
       - name: Move llvm-linux64 to destination folder
         run: mv llvm-linux64 ~/
+        if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
       - name: Store llvm-linux64 for use by later steps
         uses: actions/upload-artifact@v2
