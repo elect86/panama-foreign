@@ -257,7 +257,7 @@ jobs:
           --with-default-make-target="product-bundles test-bundles"
           --with-zlib=system
           --enable-jtreg-failure-handler
-          --with-libclang=~/llvm-linux64
+          --with-libclang=/home/runner/llvm-linux64
           --with-libclang-version=12
         working-directory: jdk
 
