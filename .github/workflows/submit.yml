@@ -72,6 +72,8 @@ jobs:
         run: "echo JTREG_REF=jtreg-${{ fromJson(steps.check_deps.outputs.dependencies).JTREG_VERSION }}+${{ fromJson(steps.check_deps.outputs.dependencies).JTREG_BUILD }} >> $GITHUB_ENV"
         if: steps.check_submit.outputs.should_run != 'false'
 
+      - run: ls ~
+
       - name: Check if a jtreg image is present in the cache
         id: jtreg
         uses: actions/cache@v2
@@ -79,6 +81,9 @@ jobs:
           path: ~/jtreg/
           key: jtreg-${{ env.JTREG_REF }}-v1
         if: steps.check_submit.outputs.should_run != 'false'
+
+      - run: ls ~
+      - run: ls ~/jtreg
 
       - name: Checkout the jtreg source
         uses: actions/checkout@v2
