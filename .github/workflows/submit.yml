@@ -122,7 +122,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux64
+          key: llvm-linux64+
 
       - run: ls ~
 
@@ -142,13 +142,6 @@ jobs:
 
       - name: Move llvm-linux64 to destination folder
         run: mv llvm-linux64 ~/
-        if: steps.llvm-linux64.outputs.cache-hit != 'true'
-
-      - name: Cache if was still missing
-        uses: actions/cache@v2
-        with:
-          path: ~/llvm-linux64/
-          key: llvm-linux64
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
       - uses: suisei-cn/actions-download-file@v1
@@ -233,11 +226,11 @@ jobs:
 
       - run: ls ~
 
-      - name: Check if llvm-linux64 is present in the cache
+      - name: Retrieve cached llvm-linux64
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux64
+          key: llvm-linux64+
 
       - run: ls ~
 
