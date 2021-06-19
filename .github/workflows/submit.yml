@@ -122,7 +122,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/llvm-linux64/
-          key: llvm-linux64
+          key: llvm-linux641
 
       - run: ls ~
 
