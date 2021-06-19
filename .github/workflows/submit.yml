@@ -52,19 +52,11 @@ jobs:
         run: echo "::set-output name=bundle_id::${GITHUB_ACTOR}_${GITHUB_SHA:0:8}"
         if: steps.check_submit.outputs.should_run != 'false'
 
-      - name: push tag for the incoming release
-        id: tag
-        run: |
-          git tag $(date +"%y-%m-%d_%H.%M") HEAD
-          git push --tags
-          echo "::set-output name=tag::`date +"%y-%m-%d_%H.%M"`"
-        working-directory: jdk
-
       - name: Cache the source
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ steps.tag.outputs.tag }}
+          key: ${{ env.CI_SHA_SHORT }}
         if: steps.check_submit.outputs.should_run != 'false'
 
       - name: Checkout the source
@@ -161,6 +153,14 @@ jobs:
         run: mv clang+llvm-12.0.0-x86_64-apple-darwin llvm-macos64
         if: steps.llvm-macos64.outputs.cache-hit != 'true'
 
+      - name: push tag for the incoming release
+        id: tag
+        run: |
+          git tag $(date +"%y-%m-%d_%H.%M") HEAD
+          git push --tags
+          echo "::set-output name=tag::`date +"%y-%m-%d_%H.%M"`"
+        working-directory: jdk
+
   linux_x64_build:
 #    name: Linux x64
     runs-on: "ubuntu-20.04"
@@ -191,7 +191,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ needs.prerequisites.outputs.tag }}
+          key: ${{ env.CI_SHA_SHORT }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -344,7 +344,7 @@ jobs:
       - name: Restore source from cache
         uses: actions/cache@v2
         with:
-          key: ${{ needs.prerequisites.outputs.tag }}
+          key: ${{ env.CI_SHA_SHORT }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -529,7 +529,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ needs.prerequisites.outputs.tag }}
+          key: ${{ env.CI_SHA_SHORT }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -1311,7 +1311,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: jdk
-          key: ${{ needs.prerequisites.outputs.tag }}
+          key: ${{ env.CI_SHA_SHORT }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -1568,7 +1568,7 @@ jobs:
       - name: Restore source from cache
         uses: actions/cache@v2
         with:
-          key: ${{ needs.prerequisites.outputs.tag }}
+          key: ${{ env.CI_SHA_SHORT }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
