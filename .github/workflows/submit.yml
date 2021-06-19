@@ -248,7 +248,9 @@ jobs:
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz, jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz
+          artifacts:
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz,
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
           name: ${{ needs.prerequisites.outputs.tag }}
@@ -1509,7 +1511,7 @@ jobs:
           artifacts:
             jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }}.tar.gz,
             jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }}-symbols.tar.gz,
-            jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz,
             jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}-demos.tar.gz
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
