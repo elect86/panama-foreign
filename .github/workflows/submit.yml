@@ -52,13 +52,6 @@ jobs:
         run: echo "::set-output name=bundle_id::${GITHUB_ACTOR}_${GITHUB_SHA:0:8}"
         if: steps.check_submit.outputs.should_run != 'false'
 
-      - name: Cache the source
-        uses: actions/cache@v2
-        with:
-          path: jdk
-          key: ${{ github.actor }}
-        if: steps.check_submit.outputs.should_run != 'false'
-
       - name: Checkout the source
         uses: actions/checkout@v2
         with:
@@ -186,12 +179,10 @@ jobs:
       BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
 
     steps:
-
-      - name: Restore source from cache
-        uses: actions/cache@v2
+      - name: Checkout the source
+        uses: actions/checkout@v2
         with:
           path: jdk
-          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -341,11 +332,10 @@ jobs:
 
       - uses: FranzDiebold/github-env-vars-action@v2 # https://github.com/FranzDiebold/github-env-vars-action
 
-      - name: Restore source from cache
-        uses: actions/cache@v2
+      - name: Checkout the source
+        uses: actions/checkout@v2
         with:
-          path: ./
-          key: ${{ github.actor }}
+          path: jdk
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -525,12 +515,10 @@ jobs:
       BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).LINUX_X64_BOOT_JDK_SHA256 }}"
 
     steps:
-
-      - name: Restore source from cache
-        uses: actions/cache@v2
+      - name: Checkout the source
+        uses: actions/checkout@v2
         with:
           path: jdk
-          key: ${{ github.actor }}
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -1307,12 +1295,11 @@ jobs:
       BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).MACOS_X64_BOOT_JDK_SHA256 }}"
 
     steps:
-
-      - name: Restore source from cache
-        uses: actions/cache@v2
+      - name: Checkout the source
+        uses: actions/checkout@v2
         with:
           path: jdk
-          key: ${{ github.actor }}
+
 
       - name: Restore boot JDK from cache
         id: bootjdk
@@ -1565,7 +1552,6 @@ jobs:
       BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).MACOS_X64_BOOT_JDK_SHA256 }}"
 
     steps:
-
       - name: Checkout the source
         uses: actions/checkout@v2
 
