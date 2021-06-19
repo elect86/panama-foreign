@@ -233,6 +233,7 @@ jobs:
           key: llvm-linux64+
 
       - run: ls ~
+      - run: ls ~/llvm-linux64
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
