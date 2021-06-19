@@ -334,8 +334,6 @@ jobs:
 
       - name: Checkout the source
         uses: actions/checkout@v2
-        with:
-          path: jdk
 
       - name: Restore boot JDK from cache
         id: bootjdk
