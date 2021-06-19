@@ -132,8 +132,8 @@ jobs:
         run: tar -xf clang+llvm-12.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz -C llvm-linux64
         if: steps.llvm-linux64.outputs.cache-hit != 'true'
 
-      - name: Move llvm-linux-64 to destination folder
-        run: mv llvm-linux-64 ~/
+      - name: Move llvm-linux64 to destination folder
+        run: mv llvm-linux64 ~/
         if: steps.jtreg.outputs.cache-hit != 'true'
 
       - name: Store llvm-linux64 for use by later steps
@@ -225,8 +225,8 @@ jobs:
       - name: Restore llvm
         uses: actions/download-artifact@v2
         with:
-          name: llvm-linux-64
-          path: ~/llvm-linux-64/
+          name: llvm-linux64
+          path: ~/llvm-linux64/
 
       - name: Checkout gtest sources
         uses: actions/checkout@v2
