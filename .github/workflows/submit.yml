@@ -1701,6 +1701,7 @@ jobs:
 
       - run: ls
       - run: ls ~
+      - run: pwd
 
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
