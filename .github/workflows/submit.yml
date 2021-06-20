@@ -466,8 +466,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts:
-            linux-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip,
-            linux-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
+            $HOME/linux-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip,
+            $HOME/linux-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
           name: ${{ needs.prerequisites.outputs.tag }}
@@ -1703,8 +1703,8 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts:
-            macos-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip,
-            macos-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
+            $HOME/macos-x64${{ matrix.artifact }}_testresults_${{ env.logsuffix }}.zip,
+            $HOME/macos-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
           name: ${{ needs.prerequisites.outputs.tag }}
