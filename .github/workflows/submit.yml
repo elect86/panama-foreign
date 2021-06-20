@@ -1793,6 +1793,9 @@ jobs:
           path: ~/macos-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
 
+      - run: ls
+      - run: ls ~
+
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
         with:
