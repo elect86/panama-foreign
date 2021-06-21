@@ -418,6 +418,7 @@ jobs:
         run: >
           if ! grep --include=test-summary.txt -lqr build/*/test-results -e "TEST SUCCESS" ; then
             cat build/*/test-results/*/text/newfailures.txt ;
+            echo "linux64FailedTests=`wc -l < build/*/test-results/*/text/newfailures.txt`" >> $GITHUB_ENV
             exit 1 ;
           fi
 
@@ -469,7 +470,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
           name: ${{ needs.prerequisites.outputs.tag }}
-          body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
+          body: linux64FailedTests=${{ env.linux64FailedTests }}
           allowUpdates: true
           artifactErrorsFailBuild: true
 
@@ -1655,6 +1656,7 @@ jobs:
         run: >
           if ! grep --include=test-summary.txt -lqr build/*/test-results -e "TEST SUCCESS" ; then
             cat build/*/test-results/*/text/newfailures.txt ;
+            echo "macos64FailedTests=`wc -l < build/*/test-results/*/text/newfailures.txt`" >> $GITHUB_ENV
             exit 1 ;
           fi
 
@@ -1706,7 +1708,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.prerequisites.outputs.tag }}
           name: ${{ needs.prerequisites.outputs.tag }}
-          body: ${{ github.actor }}-${{ env.CI_SHA_SHORT }}
+          body: macos64FailedTests=${{ env.macos64FailedTests }}
           allowUpdates: true
           artifactErrorsFailBuild: true
 
