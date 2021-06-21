@@ -466,8 +466,6 @@ jobs:
           path: ~/linux-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
 
-      - run: ls ~
-
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
         with:
@@ -1792,10 +1790,6 @@ jobs:
         with:
           path: ~/macos-x64${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
-
-      - run: ls
-      - run: ls ~
-      - run: pwd
 
       - name: 🛎️ Create release
         uses: ncipollo/release-action@v1
