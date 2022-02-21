@@ -14,7 +14,7 @@ on:
 
 jobs:
   prerequisites:
-#    name: Prerequisites
+    name: Prerequisites
     runs-on: "ubuntu-20.04"
     outputs:
       should_run: ${{ steps.check_submit.outputs.should_run }}
@@ -22,6 +22,7 @@ jobs:
       platform_linux_additional: ${{ steps.check_platforms.outputs.platform_linux_additional }}
       platform_linux_x64: ${{ steps.check_platforms.outputs.platform_linux_x64 }}
       platform_linux_x86: ${{ steps.check_platforms.outputs.platform_linux_x86 }}
+#      platform_windows_aarch64: ${{ steps.check_platforms.outputs.platform_windows_aarch64 }}
       platform_windows_x64: ${{ steps.check_platforms.outputs.platform_windows_x64 }}
       platform_macos_x64: ${{ steps.check_platforms.outputs.platform_macos_x64 }}
       platform_macos_aarch64: ${{ steps.check_platforms.outputs.platform_macos_aarch64 }}
@@ -155,7 +156,7 @@ jobs:
         working-directory: jdk
 
   linux_x64_build:
-#    name: Linux x64
+    name: Linux x64
     runs-on: "ubuntu-20.04"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && (needs.prerequisites.outputs.platform_linux_x64 != 'false' || needs.prerequisites.outputs.platform_linux_additional == 'true')
@@ -240,7 +241,6 @@ jobs:
           --with-conf-name=linux-x64
           ${{ matrix.flags }}
           --with-version-opt=${GITHUB_ACTOR}-${GITHUB_SHA}
-          --with-version-build=0
           --with-boot-jdk=${HOME}/bootjdk/${BOOT_JDK_VERSION}
           --with-jtreg=${HOME}/jtreg
           --with-gtest=${GITHUB_WORKSPACE}/gtest
@@ -275,11 +275,11 @@ jobs:
         with:
           name: transient_jdk-linux-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           path: |
-            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz
-            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin${{ matrix.artifact }}.tar.gz
+            jdk/build/linux-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz
 
   linux_x64_test:
-#    name: Linux x64
+    name: Linux x64
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -385,23 +385,23 @@ jobs:
 
       - name: Unpack jdk
         run: |
-          mkdir -p "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin${{ matrix.artifact }}"
 
       - name: Unpack tests
         run: |
-          mkdir -p "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin-tests${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin-tests${{ matrix.artifact }}"
 
       - name: Find root of jdk image dir
         run: |
-          imageroot=`find ${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin${{ matrix.artifact }} -name release -type f`
+          imageroot=`find ${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin${{ matrix.artifact }} -name release -type f`
           echo "imageroot=`dirname ${imageroot}`" >> $GITHUB_ENV
 
       - name: Run tests
         run: >
           JDK_IMAGE_DIR=${{ env.imageroot }}
-          TEST_IMAGE_DIR=${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin-tests${{ matrix.artifact }}
+          TEST_IMAGE_DIR=${HOME}/jdk-linux-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin-tests${{ matrix.artifact }}
           BOOT_JDK=${HOME}/bootjdk/${BOOT_JDK_VERSION}
           JT_HOME=${HOME}/jtreg
           make test-prebuilt
@@ -476,7 +476,7 @@ jobs:
           artifactErrorsFailBuild: true
 
   linux_additional_build:
-#    name: Linux additional
+    name: Linux additional
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -568,12 +568,12 @@ jobs:
 
       - name: Unpack build JDK
         run: |
-          mkdir -p "${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin"
-          tar -xf "${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin.tar.gz" -C "${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin"
+          mkdir -p "${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin"
+          tar -xf "${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin.tar.gz" -C "${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin"
 
       - name: Find root of build JDK image dir
         run: |
-          build_jdk_root=`find ${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x64_bin -name release -type f`
+          build_jdk_root=`find ${HOME}/jdk-linux-x64/jdk-${{ env.JDK_VERSION }}-internal_linux-x64_bin -name release -type f`
           echo "build_jdk_root=`dirname ${build_jdk_root}`" >> $GITHUB_ENV
 
       - name: Update apt
@@ -647,7 +647,6 @@ jobs:
           ${{ matrix.flags }}
           ${{ env.cross_flags }}
           --with-version-opt=${GITHUB_ACTOR}-${GITHUB_SHA}
-          --with-version-build=0
           --with-boot-jdk=${HOME}/bootjdk/${BOOT_JDK_VERSION}
           --with-build-jdk=${{ env.build_jdk_root }}
           --with-default-make-target="hotspot"
@@ -661,7 +660,7 @@ jobs:
         working-directory: jdk
 
   linux_x86_build:
-#    name: Linux x86
+    name: Linux x86
     runs-on: "ubuntu-20.04"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_linux_x86 != 'false'
@@ -756,7 +755,6 @@ jobs:
           --with-target-bits=32
           ${{ matrix.flags }}
           --with-version-opt=${GITHUB_ACTOR}-${GITHUB_SHA}
-          --with-version-build=0
           --with-boot-jdk=${HOME}/bootjdk/${BOOT_JDK_VERSION}
           --with-jtreg=${HOME}/jtreg
           --with-gtest=${GITHUB_WORKSPACE}/gtest
@@ -776,11 +774,11 @@ jobs:
         with:
           name: transient_jdk-linux-x86${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           path: |
-            jdk/build/linux-x86/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin${{ matrix.artifact }}.tar.gz
-            jdk/build/linux-x86/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/linux-x86/bundles/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin${{ matrix.artifact }}.tar.gz
+            jdk/build/linux-x86/bundles/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin-tests${{ matrix.artifact }}.tar.gz
 
   linux_x86_test:
-#    name: Linux x86
+    name: Linux x86
     runs-on: "ubuntu-20.04"
     needs:
       - prerequisites
@@ -884,23 +882,23 @@ jobs:
 
       - name: Unpack jdk
         run: |
-          mkdir -p "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin${{ matrix.artifact }}"
 
       - name: Unpack tests
         run: |
-          mkdir -p "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin-tests${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin-tests${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin-tests${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin-tests${{ matrix.artifact }}"
 
       - name: Find root of jdk image dir
         run: |
-          imageroot=`find ${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin${{ matrix.artifact }} -name release -type f`
+          imageroot=`find ${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin${{ matrix.artifact }} -name release -type f`
           echo "imageroot=`dirname ${imageroot}`" >> $GITHUB_ENV
 
       - name: Run tests
         run: >
           JDK_IMAGE_DIR=${{ env.imageroot }}
-          TEST_IMAGE_DIR=${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_linux-x86_bin-tests${{ matrix.artifact }}
+          TEST_IMAGE_DIR=${HOME}/jdk-linux-x86${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_linux-x86_bin-tests${{ matrix.artifact }}
           BOOT_JDK=${HOME}/bootjdk/${BOOT_JDK_VERSION}
           JT_HOME=${HOME}/jtreg
           make test-prebuilt
@@ -960,8 +958,95 @@ jobs:
           path: ~/linux-x86${{ matrix.artifact }}_testsupport_${{ env.logsuffix }}.zip
         continue-on-error: true
 
+  windows_aarch64_build:
+    name: Windows aarch64
+    runs-on: "windows-2019"
+    needs: prerequisites
+    if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_windows_aarch64 != 'false'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        flavor:
+          - build debug
+        include:
+          - flavor: build debug
+            flags: --enable-debug
+            artifact: -debug
+
+    env:
+      JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).DEFAULT_VERSION_FEATURE }}"
+      BOOT_JDK_VERSION: "${{ fromJson(needs.prerequisites.outputs.dependencies).BOOT_JDK_VERSION }}"
+      BOOT_JDK_FILENAME: "${{ fromJson(needs.prerequisites.outputs.dependencies).WINDOWS_X64_BOOT_JDK_FILENAME }}"
+      BOOT_JDK_URL: "${{ fromJson(needs.prerequisites.outputs.dependencies).WINDOWS_X64_BOOT_JDK_URL }}"
+      BOOT_JDK_SHA256: "${{ fromJson(needs.prerequisites.outputs.dependencies).WINDOWS_X64_BOOT_JDK_SHA256 }}"
+
+    steps:
+      - name: Restore cygwin packages from cache
+        id: cygwin
+        uses: actions/cache@v2
+        with:
+          path: ~/cygwin/packages
+          key: cygwin-packages-${{ runner.os }}-v1
+
+      - name: Install cygwin
+        run: |
+          New-Item -Force -ItemType directory -Path "$HOME\cygwin"
+          & curl -L "https://www.cygwin.com/setup-x86_64.exe" -o "$HOME/cygwin/setup-x86_64.exe"
+          Start-Process -FilePath "$HOME\cygwin\setup-x86_64.exe" -ArgumentList "--quiet-mode --packages cygwin=3.2.0-1,autoconf,make,zip,unzip --root $HOME\cygwin\cygwin64 --local-package-dir $HOME\cygwin\packages --site http://mirrors.kernel.org/sourceware/cygwin --no-desktop --no-shortcuts --no-startmenu --no-admin" -Wait -NoNewWindow
+
+      - name: Checkout the source
+        uses: actions/checkout@v2
+        with:
+          path: jdk
+
+      - name: Restore boot JDK from cache
+        id: bootjdk
+        uses: actions/cache@v2
+        with:
+          path: ~/bootjdk/${{ env.BOOT_JDK_VERSION }}
+          key: bootjdk-${{ runner.os }}-${{ env.BOOT_JDK_VERSION }}-${{ env.BOOT_JDK_SHA256 }}-v1
+
+      - name: Download boot JDK
+        run: |
+          mkdir -p "$HOME\bootjdk\$env:BOOT_JDK_VERSION"
+          & curl -L "$env:BOOT_JDK_URL" -o "$HOME/bootjdk/$env:BOOT_JDK_FILENAME"
+          $FileHash = Get-FileHash -Algorithm SHA256 "$HOME/bootjdk/$env:BOOT_JDK_FILENAME"
+          $FileHash.Hash -eq $env:BOOT_JDK_SHA256
+          & tar -xf "$HOME/bootjdk/$env:BOOT_JDK_FILENAME" -C "$HOME/bootjdk/$env:BOOT_JDK_VERSION"
+          Get-ChildItem "$HOME\bootjdk\$env:BOOT_JDK_VERSION\*\*" | Move-Item -Destination "$HOME\bootjdk\$env:BOOT_JDK_VERSION"
+        if: steps.bootjdk.outputs.cache-hit != 'true'
+
+      - name: Ensure a specific version of MSVC is installed
+        run: >
+          Start-Process -FilePath 'C:\Program Files (x86)\Microsoft Visual Studio\Installer\vs_installer.exe' -Wait -NoNewWindow -ArgumentList
+          'modify --installPath "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise" --quiet
+          --add Microsoft.VisualStudio.Component.VC.14.29.arm64'
+
+      - name: Configure
+        run: >
+          $env:Path = "$HOME\cygwin\cygwin64\bin;$HOME\cygwin\cygwin64\bin;$env:Path" ;
+          $env:Path = $env:Path -split ";" -match "C:\\Windows|PowerShell|cygwin" -join ";" ;
+          $env:BOOT_JDK = cygpath "$HOME/bootjdk/$env:BOOT_JDK_VERSION" ;
+          & bash configure
+          --with-conf-name=windows-aarch64
+          --with-msvc-toolset-version=14.29
+          --openjdk-target=aarch64-unknown-cygwin
+          ${{ matrix.flags }}
+          --with-version-opt="$env:GITHUB_ACTOR-$env:GITHUB_SHA"
+          --with-boot-jdk="$env:BOOT_JDK"
+          --with-default-make-target="hotspot"
+        working-directory: jdk
+
+      - name: Build
+        run: |
+          $env:Path = "$HOME\cygwin\cygwin64\bin;$HOME\cygwin\cygwin64\bin;$env:Path" ;
+          $env:Path = $env:Path -split ";" -match "C:\\Windows|PowerShell|cygwin" -join ";" ;
+          & make CONF_NAME=windows-aarch64
+        working-directory: jdk
+
   windows_x64_build:
-#    name: Windows x64
+    name: Windows x64
     runs-on: "windows-2019"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_windows_x64 != 'false'
@@ -1060,7 +1145,6 @@ jobs:
           --with-msvc-toolset-version=14.28
           ${{ matrix.flags }}
           --with-version-opt="$env:GITHUB_ACTOR-$env:GITHUB_SHA"
-          --with-version-build=0
           --with-boot-jdk="$env:BOOT_JDK"
           --with-jtreg="$env:JT_HOME"
           --with-gtest="$env:GTEST"
@@ -1080,12 +1164,12 @@ jobs:
         with:
           name: transient_jdk-windows-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           path: |
-            jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}.zip
-            jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin-tests${{ matrix.artifact }}.tar.gz
-            jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}-symbols.tar.gz
+            jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}.zip
+            jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/windows-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}-symbols.tar.gz
 
   windows_x64_test:
-#    name: Windows x64
+    name: Windows x64
     runs-on: "windows-2019"
     needs:
       - prerequisites
@@ -1202,21 +1286,21 @@ jobs:
 
       - name: Unpack jdk
         run: |
-          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}.zip" -C "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}.zip" -C "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}"
 
       - name: Unpack symbols
         run: |
-          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}-symbols"
-          tar -xf "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}-symbols.tar.gz" -C "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }}-symbols"
+          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}-symbols"
+          tar -xf "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}-symbols.tar.gz" -C "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }}-symbols"
 
       - name: Unpack tests
         run: |
-          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin-tests${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin-tests${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin-tests${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin-tests${{ matrix.artifact }}"
 
       - name: Find root of jdk image dir
-        run: echo ("imageroot=" + (Get-ChildItem -Path $HOME/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin${{ matrix.artifact }} -Filter release -Recurse -ErrorAction SilentlyContinue -Force).DirectoryName) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
+        run: echo ("imageroot=" + (Get-ChildItem -Path $HOME/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin${{ matrix.artifact }} -Filter release -Recurse -ErrorAction SilentlyContinue -Force).DirectoryName) | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8
 
       - name: Run tests
         run: >
@@ -1224,7 +1308,7 @@ jobs:
           $env:Path = $env:Path -split ";" -match "C:\\Windows|PowerShell|cygwin" -join ";" ;
           $env:JDK_IMAGE_DIR = cygpath "${{ env.imageroot }}" ;
           $env:SYMBOLS_IMAGE_DIR = cygpath "${{ env.imageroot }}" ;
-          $env:TEST_IMAGE_DIR = cygpath "$HOME/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_windows-x64_bin-tests${{ matrix.artifact }}" ;
+          $env:TEST_IMAGE_DIR = cygpath "$HOME/jdk-windows-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_windows-x64_bin-tests${{ matrix.artifact }}" ;
           $env:BOOT_JDK = cygpath "$HOME/bootjdk/$env:BOOT_JDK_VERSION" ;
           $env:JT_HOME = cygpath "$HOME/jtreg" ;
           & make test-prebuilt
@@ -1287,7 +1371,7 @@ jobs:
         continue-on-error: true
 
   macos_x64_build:
-#    name: macOS x64
+    name: macOS x64
     runs-on: "macos-10.15"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_macos_x64 != 'false'
@@ -1373,7 +1457,6 @@ jobs:
           --with-conf-name=macos-x64
           ${{ matrix.flags }}
           --with-version-opt=${GITHUB_ACTOR}-${GITHUB_SHA}
-          --with-version-build=0
           --with-boot-jdk=${HOME}/bootjdk/${BOOT_JDK_VERSION}/Contents/Home
           --with-jtreg=${HOME}/jtreg
           --with-gtest=${GITHUB_WORKSPACE}/gtest
@@ -1408,11 +1491,11 @@ jobs:
         with:
           name: transient_jdk-macos-x64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           path: |
-            jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }}.tar.gz
-            jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin${{ matrix.artifact }}.tar.gz
+            jdk/build/macos-x64/bundles/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz
 
   macos_aarch64_build:
-#    name: macOS aarch64
+    name: macOS aarch64
     runs-on: "macos-10.15"
     needs: prerequisites
     if: needs.prerequisites.outputs.should_run != 'false' && needs.prerequisites.outputs.platform_macos_aarch64 != 'false'
@@ -1493,7 +1576,6 @@ jobs:
           --openjdk-target=aarch64-apple-darwin
           ${{ matrix.flags }}
           --with-version-opt=${GITHUB_ACTOR}-${GITHUB_SHA}
-          --with-version-build=0
           --with-boot-jdk=${HOME}/bootjdk/${BOOT_JDK_VERSION}/Contents/Home
           --with-jtreg=${HOME}/jtreg
           --with-gtest=${GITHUB_WORKSPACE}/gtest
@@ -1511,12 +1593,12 @@ jobs:
         with:
           name: transient_jdk-macos-aarch64${{ matrix.artifact }}_${{ needs.prerequisites.outputs.bundle_id }}
           path: |
-            jdk/build/macos-aarch64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-aarch64_bin${{ matrix.artifact }}.tar.gz
-            jdk/build/macos-aarch64/bundles/jdk-${{ env.JDK_VERSION }}-internal+0_macos-aarch64_bin-tests${{ matrix.artifact }}.tar.gz
+            jdk/build/macos-aarch64/bundles/jdk-${{ env.JDK_VERSION }}-internal_macos-aarch64_bin${{ matrix.artifact }}.tar.gz
+            jdk/build/macos-aarch64/bundles/jdk-${{ env.JDK_VERSION }}-internal_macos-aarch64_bin-tests${{ matrix.artifact }}.tar.gz
 
 
   macos_x64_test:
-#    name: macOS x64
+    name: macOS x64
     runs-on: "macos-10.15"
     needs:
       - prerequisites
@@ -1619,13 +1701,13 @@ jobs:
 
       - name: Unpack jdk
         run: |
-          mkdir -p "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin${{ matrix.artifact }}"
 
       - name: Unpack tests
         run: |
-          mkdir -p "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}"
-          tar -xf "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}"
+          mkdir -p "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin-tests${{ matrix.artifact }}"
+          tar -xf "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin-tests${{ matrix.artifact }}.tar.gz" -C "${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin-tests${{ matrix.artifact }}"
 
       - name: Install dependencies
         run: brew install make
@@ -1635,13 +1717,13 @@ jobs:
 
       - name: Find root of jdk image dir
         run: |
-          imageroot=`find ${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin${{ matrix.artifact }} -name release -type f`
+          imageroot=`find ${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin${{ matrix.artifact }} -name release -type f`
           echo "imageroot=`dirname ${imageroot}`" >> $GITHUB_ENV
 
       - name: Run tests
         run: >
           JDK_IMAGE_DIR=${{ env.imageroot }}
-          TEST_IMAGE_DIR=${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal+0_macos-x64_bin-tests${{ matrix.artifact }}
+          TEST_IMAGE_DIR=${HOME}/jdk-macos-x64${{ matrix.artifact }}/jdk-${{ env.JDK_VERSION }}-internal_macos-x64_bin-tests${{ matrix.artifact }}
           BOOT_JDK=${HOME}/bootjdk/${BOOT_JDK_VERSION}/Contents/Home
           JT_HOME=${HOME}/jtreg
           gmake test-prebuilt
@@ -1723,6 +1805,7 @@ jobs:
     needs:
       - prerequisites
       - linux_additional_build
+#      - windows_aarch64_build
       - linux_x64_test
       - linux_x86_test
       - windows_x64_test
